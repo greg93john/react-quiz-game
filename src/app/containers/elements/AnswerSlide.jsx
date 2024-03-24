@@ -1,6 +1,11 @@
 import React from "react";
 
 function AnswerSlide(props) {
+
+    const textStyle = {
+        textShadow: '1px 1px 2px rgba(0, 0, 0, 0.6)'
+    };
+
     return (
         <div
             className="container d-flex justify-content-center align-items-center"
@@ -14,15 +19,15 @@ function AnswerSlide(props) {
                 }
             }
         >
-            <div className="row row-cols-1 gy-1">
+            <div className="row row-cols-1 gy-1 text-light">
                 <div className="col">
-                    <h2>{props.headerText}</h2>
+                    <h2 style={textStyle}>{props.headerText}</h2>
                 </div>
                 <div className="col">
-                    <p>has</p>
+                    <p style={textStyle}>has</p>
                 </div>
                 <div className="col">
-                    <h1>{props.answerValue}</h1>
+                    <h1 style={textStyle}>{props.answerValue}</h1>
                 </div>
             </div>
         </div>
