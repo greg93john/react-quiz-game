@@ -1,42 +1,50 @@
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
   text-align: center;
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+body {
+  background-color: black;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.answer-buttons-container {
+  position: absolute;
+  top: 65%;
+  left: 75.5%;
+  translate: -50% -50%;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.answer-pack-container {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
 }
 
-.card {
-  padding: 2em;
+.term-container-left {
+  background-color: aqua;
 }
 
-.read-the-docs {
-  color: #888;
+.term-container-right {
+  background-color: indianred;
+}
+
+.vs-icon-container {
+  background-color: aliceblue;
+  position: absolute;
+  translate: -50% -50%;
+  top: 50%;
+  left: 50%;
+}
+
+.term-container-left,
+.term-container-right {
+  position: relative;
+}
+
+[class$="-button"] {
+  width: 12rem;
 }
