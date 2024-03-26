@@ -7,8 +7,7 @@ import ScoreBarContainer from "./containers/ScoreBarContainer";
 function Game() {
     const [currentLeftIndex, setCurrentLeftIndex] = useState(0);
     const [slideValues, setSlideValues] = useState([100, 200, 300]);
-    const [greenCheckDisplayValue, setGreenCheckDisplayValue] = useState('');
-    
+
     const sliderRef = useRef(null);
     const sliderSettings = {
         adaptiveHeight: true,
@@ -27,16 +26,15 @@ function Game() {
 
     function ToggleDisplayCheckBox(index) {
         var greenCheckElement = document.getElementById('green-check');
-        if(greenCheckElement) {
-            if(greenCheckElement.style.display !== 'none') {
-                setGreenCheckDisplayValue(greenCheckElement.style.display);
-                greenCheckElement.style.display = 'none';
+        if (greenCheckElement) {
+            if (greenCheckElement.style.visibility !== 'hidden') {
+                greenCheckElement.style.visibility = 'hidden';
             } else {
-                greenCheckElement.style.display = greenCheckDisplayValue;
+                greenCheckElement.style.visibility = 'visible';
             }
         }
     }
-    
+
     function GoToNextSlide() {
         if (sliderRef.current) {
             sliderRef.current.slickNext();

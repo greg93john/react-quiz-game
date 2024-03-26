@@ -19,7 +19,7 @@ function AnswerSlide(props) {
                 }
             }
         >
-            <div className="row row-cols-1 gy-1 text-light">
+            <div className="row row-cols-1 gy-1 bg-dark bg-gradient rounded text-light" style={{'--bs-bg-opacity': 0.8}}>
                 <div className="col">
                     <h2 style={textStyle}>{props.headerText}</h2>
                 </div>
