@@ -4,7 +4,7 @@ import AnswersContainer from "./containers/AnswersContainer";
 import QuestionContainer from "./containers/QuestionContainer";
 import ScoreBarContainer from "./containers/ScoreBarContainer";
 
-function Game() {
+function Game(props) {
     const [currentLeftIndex, setCurrentLeftIndex] = useState(0);
     const [slideValues, setSlideValues] = useState([100, 200, 300]);
 
@@ -24,7 +24,7 @@ function Game() {
         touchMove: false,
     };
 
-    function ToggleDisplayCheckBox(index) {
+    function ToggleDisplayCheckBox() {
         var greenCheckElement = document.getElementById('green-check');
         if (greenCheckElement) {
             if (greenCheckElement.style.visibility !== 'hidden') {
@@ -62,6 +62,14 @@ function Game() {
         }
     }
 
+    function HandleCorrectAnswer() {
+        GoToNextSlide();
+        IncrementIndex();
+        PrepareFutureSlideValue();
+    } function HandleWrongAnswer() {
+        alert("Wrong answer!");
+    }
+
     function PrepareFutureSlideValue() {
         const newValue = Math.round(Math.random() * 300);
         let temp = slideValues;
@@ -74,11 +82,9 @@ function Game() {
         const rightValue = slideValues[(currentLeftIndex === slideValues.length - 1) ? 0 : currentLeftIndex + 1];
 
         if ((ans === "higher" && rightValue >= leftValue) || (ans === "lower" && rightValue <= leftValue)) {
-            GoToNextSlide();
-            IncrementIndex();
-            PrepareFutureSlideValue();
+            HandleCorrectAnswer();
         } else {
-            alert("Wrong answer!");
+            HandleWrongAnswer();
         }
     }
 
