@@ -5,8 +5,8 @@ import QuestionContainer from "./containers/QuestionContainer";
 import ScoreBarContainer from "./containers/ScoreBarContainer";
 
 function Game(props) {
-    const [currentLeftIndex, setCurrentLeftIndex] = useState(0);
-    const [slideValues, setSlideValues] = useState([100, 200, 300]);
+    const [currentLeftIndex, setCurrentLeftIndex] = useState(0), [score, setScore] = useState(0), [highScore, setHighScore] = useState(0);
+    const [slideValues, setSlideValues] = useState([Math.round(Math.random() * 300), Math.round(Math.random() * 300), Math.round(Math.random() * 300)]);
 
     const sliderRef = useRef(null);
     const sliderSettings = {
@@ -27,47 +27,35 @@ function Game(props) {
     function ToggleDisplayCheckBox() {
         var greenCheckElement = document.getElementById('green-check');
         if (greenCheckElement) {
-            if (greenCheckElement.style.visibility !== 'hidden') {
-                greenCheckElement.style.visibility = 'hidden';
-            } else {
-                greenCheckElement.style.visibility = 'visible';
-            }
+            greenCheckElement.style.visibility = greenCheckElement.style.visibility === 'visible' ? 'hidden' : 'visible';
         }
     }
 
-    function GoToNextSlide() {
-        if (sliderRef.current) {
-            sliderRef.current.slickNext();
+    function GoToNextSlide(slider) {
+        if (slider.current) {
+            slider.current.slickNext();
         }
     }
 
     function IncrementIndex() {
-        switch (currentLeftIndex) {
-            case 0: {
-                setCurrentLeftIndex(1)
-                break;
-            }
-            case 1: {
-                setCurrentLeftIndex(2)
-                break;
-            }
-            case 2: {
-                setCurrentLeftIndex(0)
-                break;
-            }
-            default: {
-                alert("Index is out of scope: " + currentLeftIndex);
-                break;
-            }
-        }
+        setCurrentLeftIndex(currentLeftIndex < slideValues.length - 1 ? currentLeftIndex + 1 : 0);
+    }
+
+    function IncrementScore() {
+        setScore(score + 1);
     }
 
     function HandleCorrectAnswer() {
-        GoToNextSlide();
+        IncrementScore();
         IncrementIndex();
         PrepareFutureSlideValue();
+        GoToNextSlide(sliderRef);
     } function HandleWrongAnswer() {
+        if (score > highScore) {
+            setHighScore(score);
+        }
         alert("Wrong answer!");
+        setScore(0);
     }
 
     function PrepareFutureSlideValue() {
@@ -79,7 +67,7 @@ function Game(props) {
 
     function SubmitAnswer(ans) {
         const leftValue = slideValues[currentLeftIndex];
-        const rightValue = slideValues[(currentLeftIndex === slideValues.length - 1) ? 0 : currentLeftIndex + 1];
+        const rightValue = slideValues[(currentLeftIndex < slideValues.length - 1) ? currentLeftIndex + 1 : 0];
 
         if ((ans === "higher" && rightValue >= leftValue) || (ans === "lower" && rightValue <= leftValue)) {
             HandleCorrectAnswer();
@@ -92,7 +80,7 @@ function Game(props) {
     return (
         <div className="game row h-100 m-0">
             <div className="col p-0 h-100 m-0">
-                <ScoreBarContainer />
+                <ScoreBarContainer score={score} highScore={highScore} />
                 <AnswersContainer sliderSettings={sliderSettings} goToNextSlide={GoToNextSlide} sliderRef={sliderRef} slideValues={slideValues} submitAnswer={SubmitAnswer} />
                 <QuestionContainer questionText={"The value on the right is:"} />
             </div>
