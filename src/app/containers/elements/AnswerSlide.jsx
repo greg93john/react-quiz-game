@@ -24,7 +24,7 @@ function AnswerSlide(props) {
                     <h2 style={textStyle}>{props.headerText}</h2>
                 </div>
                 <div className="col">
-                    <p style={textStyle}>has</p>
+                    <p className="my-1" style={textStyle}>has</p>
                 </div>
                 <div className="col">
                     <h1 style={textStyle}>{props.answerValue}</h1>
