@@ -13,7 +13,7 @@ function ScoreBarContainer(props) {
                     <p className="m-0" style={textStyle}>Score: <span id="score">{props.score}</span></p>
                 </div>
 
-                <div style={transparentStyle} class="navbar-text bg-dark bg-gradient rounded text-light fs-3 px-2 me-4">
+                <div style={transparentStyle} className="navbar-text bg-dark bg-gradient rounded text-light fs-3 px-2 me-4">
                     <p className="m-0" style={textStyle}>High Score: <span id="high-score">{props.highScore}</span></p>
                 </div>
             </div>
