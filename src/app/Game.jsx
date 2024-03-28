@@ -5,6 +5,8 @@ import QuestionContainer from "./containers/QuestionContainer";
 import ScoreBarContainer from "./containers/ScoreBarContainer";
 
 function Game(props) {
+    const [currentLeftIndex, setCurrentLeftIndex] = useState(0);
+    const [score, setScore] = useState(0), [highScore, setHighScore] = useState(0);
 
     const [answerArray, setAnswerArray] = useState(
         [
@@ -12,69 +14,53 @@ function Game(props) {
                 answerTerm: "Red",
                 backgroundColor: "red",
                 backgroundImageURL: "https://images.pexels.com/photos/73873/star-clusters-rosette-nebula-star-galaxies-73873.jpeg",
-                answerValue: Math.round(Math.random() * 300)
+                answerValue: 100
             },
             {
                 answerTerm: "Blue",
                 backgroundColor: "blue",
                 backgroundImageURL: "https://images.pexels.com/photos/1147124/pexels-photo-1147124.jpeg",
-                answerValue: Math.round(Math.random() * 300)
+                answerValue: 200
             },
             {
                 answerTerm: "Yellow",
                 backgroundColor: "yellow",
                 backgroundImageURL: "https://images.pexels.com/photos/548391/pexels-photo-548391.jpeg",
-                answerValue: Math.round(Math.random() * 300)
+                answerValue: 300
             },
             {
                 answerTerm: "Green",
                 backgroundColor: "green",
                 backgroundImageURL: "https://images.pexels.com/photos/66869/green-leaf-natural-wallpaper-royalty-free-66869.jpeg",
-                answerValue: Math.round(Math.random() * 300)
+                answerValue: 400
             },
             {
                 answerTerm: "Orange",
                 backgroundColor: "orange",
                 backgroundImageURL: "https://images.pexels.com/photos/268976/pexels-photo-268976.jpeg",
-                answerValue: Math.round(Math.random() * 300)
+                answerValue: 500
             },
             {
                 answerTerm: "Purple",
                 backgroundColor: "purple",
                 backgroundImageURL: "https://images.pexels.com/photos/1121123/pexels-photo-1121123.jpeg",
-                answerValue: Math.round(Math.random() * 300)
+                answerValue: 600
             },
         ]
     );
 
-    const [answerValues, setAnswerValues] = useState(
-        [
-            {
-                backgroundColor: "red",
-                backgroundImageURL: "https://images.pexels.com/photos/73873/star-clusters-rosette-nebula-star-galaxies-73873.jpeg",
-                answerTerm: "Red",
-                answerValue: 100
-            },
-            {
-                backgroundColor: "blue",
-                backgroundImageURL: "https://images.pexels.com/photos/1147124/pexels-photo-1147124.jpeg",
-                answerTerm: "Blue",
-                answerValue: 200
-            },
-            {
-                backgroundColor: "yellow",
-                backgroundImageURL: "https://images.pexels.com/photos/548391/pexels-photo-548391.jpeg",
-                answerTerm: "Yellow",
-                answerValue: 300
-            }
+    function SelectThreeUniqueValues(array) {
+        const shuffledArray = ShuffleArray(array);
+        return shuffledArray.slice(0, 3);
+    } function ShuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
 
-        ]
-    );
-
-    const [currentLeftIndex, setCurrentLeftIndex] = useState(0);
-
-    const [score, setScore] = useState(0), [highScore, setHighScore] = useState(0);
-
+    const [answerValues, setAnswerValues] = useState(SelectThreeUniqueValues(answerArray));
 
     function GoToNextSlide(slider) {
         if (slider.current) {
@@ -84,10 +70,9 @@ function Game(props) {
 
     function HandleCorrectAnswer() {
         setScore(score + 1);
-
+        PrepareFutureAnswerValue();
         IncrementIndex();
         GoToNextSlide(sliderRef);
-        PrepareFutureAnswerValue();
     }
 
     function HandleWrongAnswer() {
