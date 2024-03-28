@@ -71,8 +71,8 @@ function Game(props) {
     function HandleCorrectAnswer() {
         setScore(score + 1);
         PrepareFutureAnswerValue();
-        IncrementIndex();
         GoToNextSlide(sliderRef);
+        IncrementIndex();
     }
 
     function HandleWrongAnswer() {
