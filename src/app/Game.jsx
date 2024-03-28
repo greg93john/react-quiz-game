@@ -6,63 +6,75 @@ import ScoreBarContainer from "./containers/ScoreBarContainer";
 
 function Game(props) {
 
-    const [answerObjects, setAnswerObjects] = useState(
+    const [answerArray, setAnswerArray] = useState(
         [
             {
-                name: "Red",
-                backgroundImageLink: "https://images.pexels.com/photos/73873/star-clusters-rosette-nebula-star-galaxies-73873.jpeg",
-                value: Math.round(Math.random() * 300)
+                answerTerm: "Red",
+                backgroundColor: "red",
+                backgroundImageURL: "https://images.pexels.com/photos/73873/star-clusters-rosette-nebula-star-galaxies-73873.jpeg",
+                answerValue: Math.round(Math.random() * 300)
             },
             {
-                name: "Blue",
-                backgroundImageLink: "https://images.pexels.com/photos/1147124/pexels-photo-1147124.jpeg",
-                value: Math.round(Math.random() * 300)
+                answerTerm: "Blue",
+                backgroundColor: "blue",
+                backgroundImageURL: "https://images.pexels.com/photos/1147124/pexels-photo-1147124.jpeg",
+                answerValue: Math.round(Math.random() * 300)
             },
             {
-                name: "Yellow",
-                backgroundImageLink: "https://images.pexels.com/photos/548391/pexels-photo-548391.jpeg",
-                value: Math.round(Math.random() * 300)
+                answerTerm: "Yellow",
+                backgroundColor: "yellow",
+                backgroundImageURL: "https://images.pexels.com/photos/548391/pexels-photo-548391.jpeg",
+                answerValue: Math.round(Math.random() * 300)
             },
             {
-                name: "Green",
-                backgroundImageLink: "https://images.pexels.com/photos/66869/green-leaf-natural-wallpaper-royalty-free-66869.jpeg",
-                value: Math.round(Math.random() * 300)
+                answerTerm: "Green",
+                backgroundColor: "green",
+                backgroundImageURL: "https://images.pexels.com/photos/66869/green-leaf-natural-wallpaper-royalty-free-66869.jpeg",
+                answerValue: Math.round(Math.random() * 300)
             },
             {
-                name: "Orange",
-                backgroundImageLink: "https://images.pexels.com/photos/268976/pexels-photo-268976.jpeg",
-                value: Math.round(Math.random() * 300)
+                answerTerm: "Orange",
+                backgroundColor: "orange",
+                backgroundImageURL: "https://images.pexels.com/photos/268976/pexels-photo-268976.jpeg",
+                answerValue: Math.round(Math.random() * 300)
             },
             {
-                name: "Purple",
-                backgroundImageLink: "https://images.pexels.com/photos/1121123/pexels-photo-1121123.jpeg",
-                value: Math.round(Math.random() * 300)
+                answerTerm: "Purple",
+                backgroundColor: "purple",
+                backgroundImageURL: "https://images.pexels.com/photos/1121123/pexels-photo-1121123.jpeg",
+                answerValue: Math.round(Math.random() * 300)
             },
         ]
     );
 
-    const selectLeftAnswer = answerObjects[Math.floor(Math.random() * answerObjects.length)];
-    const [leftAnswer, setLeftAnswer] = useState(selectLeftAnswer);
+    const [answerValues, setAnswerValues] = useState(
+        [
+            {
+                backgroundColor: "red",
+                backgroundImageURL: "https://images.pexels.com/photos/73873/star-clusters-rosette-nebula-star-galaxies-73873.jpeg",
+                answerTerm: "Red",
+                answerValue: 100
+            },
+            {
+                backgroundColor: "blue",
+                backgroundImageURL: "https://images.pexels.com/photos/1147124/pexels-photo-1147124.jpeg",
+                answerTerm: "Blue",
+                answerValue: 200
+            },
+            {
+                backgroundColor: "yellow",
+                backgroundImageURL: "https://images.pexels.com/photos/548391/pexels-photo-548391.jpeg",
+                answerTerm: "Yellow",
+                answerValue: 300
+            }
 
-    const filteredObjects = answerObjects.filter((value) => ![leftAnswer].includes(value));
-    const selectRightAnswer = filteredObjects[Math.floor(Math.random() * answerObjects.length)];
-    const [rightAnswer, setRightAnswer] = useState(selectRightAnswer);
-
-    const filteredObjects2 = answerObjects.filter((value) => ![leftAnswer, rightAnswer].includes(value));
-    const selectNextAnswer = filteredObjects2[Math.floor(Math.random() * answerObjects.length)];
-    const [nextAnswer, setNextAnswer] = useState(selectNextAnswer);
+        ]
+    );
 
     const [currentLeftIndex, setCurrentLeftIndex] = useState(0);
-    const [slideValues, setSlideValues] = useState([Math.round(Math.random() * 300), Math.round(Math.random() * 300), Math.round(Math.random() * 300)]);
 
     const [score, setScore] = useState(0), [highScore, setHighScore] = useState(0);
 
-    function ToggleDisplayCheckBox() {
-        var greenCheckElement = document.getElementById('green-check');
-        if (greenCheckElement) {
-            greenCheckElement.style.visibility = greenCheckElement.style.visibility === 'visible' ? 'hidden' : 'visible';
-        }
-    }
 
     function GoToNextSlide(slider) {
         if (slider.current) {
@@ -70,20 +82,15 @@ function Game(props) {
         }
     }
 
-    function IncrementIndex() {
-        setCurrentLeftIndex(currentLeftIndex < 2 ? currentLeftIndex + 1 : 0);
-    }
-
-    function IncrementScore() {
-        setScore(score + 1);
-    }
-
     function HandleCorrectAnswer() {
-        IncrementScore();
+        setScore(score + 1);
+
         IncrementIndex();
         GoToNextSlide(sliderRef);
-        PrepareFutureSlideValue();
-    } function HandleWrongAnswer() {
+        PrepareFutureAnswerValue();
+    }
+
+    function HandleWrongAnswer() {
         if (score > highScore) {
             setHighScore(score);
         }
@@ -91,16 +98,25 @@ function Game(props) {
         setScore(0);
     }
 
-    function PrepareFutureSlideValue() {
-        const newValue = Math.round(Math.random() * 300);
-        let temp = slideValues;
-        temp[currentLeftIndex - 1 < 0 ? slideValues.length - 1 : currentLeftIndex - 1] = newValue;
-        setSlideValues(temp);
+    function IncrementIndex() {
+        setCurrentLeftIndex(currentLeftIndex < 2 ? currentLeftIndex + 1 : 0);
+    }
+
+    function PrepareFutureAnswerValue() {
+        let _temp = answerValues;
+
+        const excludedValues = [_temp[currentLeftIndex], _temp[currentLeftIndex < _temp.length - 1 ? currentLeftIndex + 1 : 0]];
+        const filteredArray = answerArray.filter(value => !excludedValues.includes(value));
+        const selectedValue = filteredArray[Math.floor(Math.random() * filteredArray.length)];
+
+        _temp[currentLeftIndex - 1 < 0 ? _temp.length - 1 : currentLeftIndex - 1] = selectedValue
+
+        setAnswerValues(_temp);
     }
 
     function SubmitAnswer(ans) {
-        const leftValue = slideValues[currentLeftIndex];
-        const rightValue = slideValues[(currentLeftIndex < slideValues.length - 1) ? currentLeftIndex + 1 : 0];
+        const leftValue = answerValues[currentLeftIndex].answerValue;
+        const rightValue = answerValues[(currentLeftIndex < answerValues.length - 1) ? currentLeftIndex + 1 : 0].answerValue;
 
         if ((ans === "higher" && rightValue >= leftValue) || (ans === "lower" && rightValue <= leftValue)) {
             HandleCorrectAnswer();
@@ -124,12 +140,18 @@ function Game(props) {
         swipe: false,
         touchMove: false,
     };
+    function ToggleDisplayCheckBox() {
+        var greenCheckElement = document.getElementById('green-check');
+        if (greenCheckElement) {
+            greenCheckElement.style.visibility = greenCheckElement.style.visibility === 'visible' ? 'hidden' : 'visible';
+        }
+    }
 
     return (
         <div className="game row h-100 m-0">
             <div className="col p-0 h-100 m-0">
                 <ScoreBarContainer score={score} highScore={highScore} />
-                <AnswersContainer leftAnswer={leftAnswer} rightAnswer={rightAnswer} nextAnswer={nextAnswer} sliderSettings={sliderSettings} goToNextSlide={GoToNextSlide} sliderRef={sliderRef} slideValues={slideValues} submitAnswer={SubmitAnswer} />
+                <AnswersContainer answerValues={answerValues} sliderSettings={sliderSettings} sliderRef={sliderRef} submitAnswer={SubmitAnswer} />
                 <QuestionContainer questionText={"The value on the right is:"} />
             </div>
         </div>
