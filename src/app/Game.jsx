@@ -45,7 +45,7 @@ function Game(props) {
                 backgroundColor: "purple",
                 backgroundImageURL: "https://images.pexels.com/photos/1121123/pexels-photo-1121123.jpeg",
                 answerValue: 600
-            },
+            }
         ]
     );
 
@@ -103,6 +103,8 @@ function Game(props) {
         const leftValue = answerValues[currentLeftIndex].answerValue;
         const rightValue = answerValues[(currentLeftIndex < answerValues.length - 1) ? currentLeftIndex + 1 : 0].answerValue;
 
+        StartCountupRef();
+
         if ((ans === "higher" && rightValue >= leftValue) || (ans === "lower" && rightValue <= leftValue)) {
             HandleCorrectAnswer();
         } else {
@@ -132,11 +134,20 @@ function Game(props) {
         }
     }
 
+    const countUpRef = useRef();
+    function StartCountupRef() {
+        if(countUpRef.current) {
+            console.log(countUpRef.current);
+        } else {
+            console.log("we got no ref!");
+        }
+    }
+
     return (
         <div className="game row h-100 m-0">
             <div className="col p-0 h-100 m-0">
                 <ScoreBarContainer score={score} highScore={highScore} />
-                <AnswersContainer answerValues={answerValues} sliderSettings={sliderSettings} sliderRef={sliderRef} submitAnswer={SubmitAnswer} />
+                <AnswersContainer answerValues={answerValues} sliderSettings={sliderSettings} sliderRef={sliderRef} submitAnswer={SubmitAnswer} countUpRef={countUpRef}/>
                 <QuestionContainer questionText={"The value on the right is:"} />
             </div>
         </div>

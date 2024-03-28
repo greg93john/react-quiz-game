@@ -14,13 +14,13 @@ function AnswersContainer(props) {
         <div className="h-100 m-0" style={{ overflow: 'hidden' }}>
             <Slider {...props.sliderSettings} ref={props.sliderRef} className="w-100 h-100">
                 <div>
-                    <AnswerSlide answer={props.answerValues[0]} />
+                    <AnswerSlide countUpRef={props.countUpRef} answer={props.answerValues[0]} />
                 </div>
                 <div>
-                    <AnswerSlide answer={props.answerValues[1]} />
+                    <AnswerSlide countUpRef={props.countUpRef} answer={props.answerValues[1]} />
                 </div>
                 <div>
-                    <AnswerSlide answer={props.answerValues[2]} />
+                    <AnswerSlide countUpRef={props.countUpRef} answer={props.answerValues[2]} />
                 </div>
             </Slider>
             <AnswerButtonsContainer submitAnswer={props.submitAnswer} />
