@@ -86,6 +86,7 @@ function Game(props) {
         alert("Wrong answer!");
         setScore(0);
         HideRightAnswerValueText();
+        DisableAnswerButtons(false);
     }
 
     function IncrementIndex() {
@@ -112,6 +113,8 @@ function Game(props) {
         const rightValue = answerValues[_currentRightIndex].answerValue;
 
         let _rightAnswerValueElements = document.querySelectorAll(`.answer-value-${_currentRightIndex}`);
+
+        DisableAnswerButtons(true);
 
         await AnimateNumber(_rightAnswerValueElements, rightValue, 2000);
 
@@ -163,8 +166,14 @@ function Game(props) {
     const sliderRef = useRef(null);
     const sliderSettings = {
         adaptiveHeight: true,
-        afterChange: ToggleDisplayCheckBox,
-        beforeChange: () => { ToggleDisplayCheckBox(); HideRightAnswerValueText(); },
+        afterChange: () => {
+            ToggleDisplayCheckBox();
+            DisableAnswerButtons(false);
+        },
+        beforeChange: () => {
+            ToggleDisplayCheckBox();
+            HideRightAnswerValueText();
+        },
         arrows: false,
         dots: false,
         draggable: false,
@@ -180,6 +189,11 @@ function Game(props) {
         if (greenCheckElement) {
             greenCheckElement.style.visibility = greenCheckElement.style.visibility === 'visible' ? 'hidden' : 'visible';
         }
+    }
+
+    function DisableAnswerButtons(val) {
+        document.querySelector('.higher-button').disabled = val;
+        document.querySelector('.lower-button').disabled = val;
     }
 
     return (
