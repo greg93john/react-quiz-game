@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 
 import AnswersContainer from "./containers/AnswersContainer";
 import QuestionContainer from "./containers/QuestionContainer";
@@ -7,6 +7,10 @@ import ScoreBarContainer from "./containers/ScoreBarContainer";
 function Game(props) {
     const [currentLeftIndex, setCurrentLeftIndex] = useState(0);
     const [score, setScore] = useState(0), [highScore, setHighScore] = useState(0);
+
+    useLayoutEffect(() => {
+        HideRightAnswerValueText();
+    }, [])
 
     const [answerArray, setAnswerArray] = useState(
         [
@@ -70,9 +74,9 @@ function Game(props) {
 
     function HandleCorrectAnswer() {
         setScore(score + 1);
-        PrepareFutureAnswerValue();
         GoToNextSlide(sliderRef);
         IncrementIndex();
+        PrepareFutureAnswerValue();
     }
 
     function HandleWrongAnswer() {
@@ -81,6 +85,7 @@ function Game(props) {
         }
         alert("Wrong answer!");
         setScore(0);
+        HideRightAnswerValueText();
     }
 
     function IncrementIndex() {
@@ -90,7 +95,9 @@ function Game(props) {
     function PrepareFutureAnswerValue() {
         let _temp = answerValues;
 
-        const excludedValues = [_temp[currentLeftIndex], _temp[currentLeftIndex < _temp.length - 1 ? currentLeftIndex + 1 : 0]];
+        const _currentRightIndex = currentLeftIndex < _temp.length - 1 ? currentLeftIndex + 1 : 0;
+
+        const excludedValues = [_temp[currentLeftIndex], _temp[_currentRightIndex]];
         const filteredArray = answerArray.filter(value => !excludedValues.includes(value));
         const selectedValue = filteredArray[Math.floor(Math.random() * filteredArray.length)];
 
@@ -99,11 +106,14 @@ function Game(props) {
         setAnswerValues(_temp);
     }
 
-    function SubmitAnswer(ans) {
+    async function SubmitAnswer(ans) {
+        const _currentRightIndex = currentLeftIndex < answerValues.length - 1 ? currentLeftIndex + 1 : 0;
         const leftValue = answerValues[currentLeftIndex].answerValue;
-        const rightValue = answerValues[(currentLeftIndex < answerValues.length - 1) ? currentLeftIndex + 1 : 0].answerValue;
+        const rightValue = answerValues[_currentRightIndex].answerValue;
 
-        StartCountupRef();
+        let _rightAnswerValueElements = document.querySelectorAll(`.answer-value-${_currentRightIndex}`);
+
+        await AnimateNumber(_rightAnswerValueElements, rightValue, 2000);
 
         if ((ans === "higher" && rightValue >= leftValue) || (ans === "lower" && rightValue <= leftValue)) {
             HandleCorrectAnswer();
@@ -112,11 +122,49 @@ function Game(props) {
         }
     }
 
+    function AnimateNumber(elements, endValue, duration) {
+        return new Promise((resolve, reject) => {
+            elements = [...elements];
+            console.log(elements);
+            let start = 0;
+            const startTime = performance.now();
+
+            function updateValue(timestamp) {
+                const elapsed = timestamp - startTime;
+                const progress = elapsed / duration;
+
+                if (progress < 1) {
+                    const currentValue = Math.floor(start + (endValue - start) * progress);
+                    elements.forEach(el => {
+                        el.textContent = currentValue;
+                    });
+                    requestAnimationFrame(updateValue);
+                } else {
+                    elements.forEach(el => {
+                        el.textContent = endValue;
+                    });
+                }
+            }
+
+            requestAnimationFrame(updateValue);
+            setTimeout(() => { resolve(); }, duration + 250)
+
+        });
+    }
+
+    function HideRightAnswerValueText() {
+        const _currentRightIndex = currentLeftIndex < answerValues.length - 1 ? currentLeftIndex + 1 : 0;
+        let _rightAnswerValueElements = [...document.querySelectorAll(`.answer-value-${_currentRightIndex}`)];
+        _rightAnswerValueElements.forEach(element => {
+            element.textContent = "?";
+        })
+    }
+
     const sliderRef = useRef(null);
     const sliderSettings = {
         adaptiveHeight: true,
         afterChange: ToggleDisplayCheckBox,
-        beforeChange: ToggleDisplayCheckBox,
+        beforeChange: () => { ToggleDisplayCheckBox(); HideRightAnswerValueText(); },
         arrows: false,
         dots: false,
         draggable: false,
@@ -134,20 +182,11 @@ function Game(props) {
         }
     }
 
-    const countUpRef = useRef();
-    function StartCountupRef() {
-        if(countUpRef.current) {
-            console.log(countUpRef.current);
-        } else {
-            console.log("we got no ref!");
-        }
-    }
-
     return (
         <div className="game row h-100 m-0">
             <div className="col p-0 h-100 m-0">
                 <ScoreBarContainer score={score} highScore={highScore} />
-                <AnswersContainer answerValues={answerValues} sliderSettings={sliderSettings} sliderRef={sliderRef} submitAnswer={SubmitAnswer} countUpRef={countUpRef}/>
+                <AnswersContainer answerValues={answerValues} sliderSettings={sliderSettings} sliderRef={sliderRef} submitAnswer={SubmitAnswer} />
                 <QuestionContainer questionText={"The value on the right is:"} />
             </div>
         </div>

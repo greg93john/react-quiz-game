@@ -1,5 +1,4 @@
 import React from "react";
-import CountUp from "react-countup";
 
 function AnswerSlide(props) {
     const _answer = props.answer;
@@ -29,13 +28,7 @@ function AnswerSlide(props) {
                     <p className="my-1" style={textStyle}>has</p>
                 </div>
                 <div className="col">
-                    <CountUp start={0} end={_answer.answerValue} duration={2} startOnMount={false}>
-                        {
-                            ({ countUpRef, start }) => (
-                                <h1 ref={countUpRef} style={textStyle}></h1>
-                            )
-                        }
-                    </CountUp>
+                    <h1 className={`answer-value-${props.answerID}`} style={textStyle}>{_answer.answerValue}</h1>
                 </div>
             </div>
         </div>
