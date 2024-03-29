@@ -12,7 +12,7 @@ body {
 
 .answer-buttons-container {
   position: absolute;
-  top: 65%;
+  top: 70%;
   left: 75.5%;
   translate: -50% -50%;
 }
@@ -30,6 +30,14 @@ body {
 
 .term-container-right {
   background-color: indianred;
+}
+
+.text-outline {
+  text-shadow:
+    2px 2px 2px #000,
+    2px -2px 2px #000,
+    -2px 2px 2px #000,
+    -2px -2px 2px #000;
 }
 
 .vs-icon-container {

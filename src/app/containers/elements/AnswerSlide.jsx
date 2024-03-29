@@ -3,10 +3,6 @@ import React from "react";
 function AnswerSlide(props) {
     const _answer = props.answer;
 
-    const textStyle = {
-        textShadow: '1px 1px 2px #000, 1px -1px 2px #000, -1px 1px 2px #000, -1px -1px 2px #000'
-    };
-
     return (
         <div
             className="container d-flex justify-content-center align-items-center"
@@ -20,15 +16,15 @@ function AnswerSlide(props) {
                 }
             }
         >
-            <div className="row row-cols-1 gy-1 rounded bg-dark bg-gradient text-light" style={{ '--bs-bg-opacity': 0.8, minWidth: '40%' }}>
+            <div className="row row-cols-1 gy-1 rounded text-light" style={{ '--bs-bg-opacity': 0.8, minWidth: '40%' }}>
                 <div className="col">
-                    <h2 style={textStyle}>{_answer.answerTerm}</h2>
+                    <h2 className="text-outline" >{_answer.answerTerm}</h2>
                 </div>
                 <div className="col">
-                    <p className="my-1" style={textStyle}>has</p>
+                    <p className="my-1 text-outline" >has</p>
                 </div>
                 <div className="col">
-                    <h1 className={`answer-value-${props.answerID}`} style={textStyle}>{_answer.answerValue}</h1>
+                    <h1 className={`answer-value-${props.answerID} text-outline`} >{_answer.answerValue}</h1>
                 </div>
             </div>
         </div>
