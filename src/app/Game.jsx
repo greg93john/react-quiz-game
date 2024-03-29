@@ -5,12 +5,6 @@ import QuestionContainer from "./containers/QuestionContainer";
 import ScoreBarContainer from "./containers/ScoreBarContainer";
 
 function Game(props) {
-    const [currentLeftIndex, setCurrentLeftIndex] = useState(0);
-    const [score, setScore] = useState(0), [highScore, setHighScore] = useState(0);
-
-    useLayoutEffect(() => {
-        HideRightAnswerValueText();
-    }, [])
 
     const [answerArray, setAnswerArray] = useState(
         [
@@ -53,6 +47,14 @@ function Game(props) {
         ]
     );
 
+    const [currentLeftIndex, setCurrentLeftIndex] = useState(0);
+    const [score, setScore] = useState(0), [highScore, setHighScore] = useState(0);
+
+    useLayoutEffect(() => {
+        HideRightAnswerValueText();
+    }, []);
+
+
     function SelectThreeUniqueValues(array) {
         const shuffledArray = ShuffleArray(array);
         return shuffledArray.slice(0, 3);
@@ -66,16 +68,14 @@ function Game(props) {
 
     const [answerValues, setAnswerValues] = useState(SelectThreeUniqueValues(answerArray));
 
-    function GoToNextSlide(slider) {
-        if (slider.current) {
-            slider.current.slickNext();
-        }
-    }
-
     function HandleCorrectAnswer() {
         setScore(score + 1);
-        GoToNextSlide(sliderRef);
-        IncrementIndex();
+        setCurrentLeftIndex(currentLeftIndex < 2 ? currentLeftIndex + 1 : 0);
+
+        if (sliderRef.current) {
+            sliderRef.current.slickNext();
+        }
+
         PrepareFutureAnswerValue();
     }
 
@@ -87,10 +87,6 @@ function Game(props) {
         setScore(0);
         HideRightAnswerValueText();
         DisableAnswerButtons(false);
-    }
-
-    function IncrementIndex() {
-        setCurrentLeftIndex(currentLeftIndex < 2 ? currentLeftIndex + 1 : 0);
     }
 
     function PrepareFutureAnswerValue() {
@@ -109,16 +105,16 @@ function Game(props) {
 
     async function SubmitAnswer(ans) {
         const _currentRightIndex = currentLeftIndex < answerValues.length - 1 ? currentLeftIndex + 1 : 0;
-        const leftValue = answerValues[currentLeftIndex].answerValue;
-        const rightValue = answerValues[_currentRightIndex].answerValue;
+        const _leftValue = answerValues[currentLeftIndex].answerValue;
+        const _rightValue = answerValues[_currentRightIndex].answerValue;
 
         let _rightAnswerValueElements = document.querySelectorAll(`.answer-value-${_currentRightIndex}`);
 
         DisableAnswerButtons(true);
 
-        await AnimateNumber(_rightAnswerValueElements, rightValue, 2000);
+        await AnimateNumber(_rightAnswerValueElements, _rightValue, 2000);
 
-        if ((ans === "higher" && rightValue >= leftValue) || (ans === "lower" && rightValue <= leftValue)) {
+        if ((ans === "higher" && _rightValue >= _leftValue) || (ans === "lower" && _rightValue <= _leftValue)) {
             HandleCorrectAnswer();
         } else {
             HandleWrongAnswer();
@@ -128,7 +124,6 @@ function Game(props) {
     function AnimateNumber(elements, endValue, duration) {
         return new Promise((resolve, reject) => {
             elements = [...elements];
-            console.log(elements);
             let start = 0;
             const startTime = performance.now();
 
@@ -155,14 +150,7 @@ function Game(props) {
         });
     }
 
-    function HideRightAnswerValueText() {
-        const _currentRightIndex = currentLeftIndex < answerValues.length - 1 ? currentLeftIndex + 1 : 0;
-        let _rightAnswerValueElements = [...document.querySelectorAll(`.answer-value-${_currentRightIndex}`)];
-        _rightAnswerValueElements.forEach(element => {
-            element.textContent = "?";
-        })
-    }
-
+    
     const sliderRef = useRef(null);
     const sliderSettings = {
         adaptiveHeight: true,
@@ -184,16 +172,25 @@ function Game(props) {
         swipe: false,
         touchMove: false,
     };
+    
+    function DisableAnswerButtons(val) {
+        document.querySelector('.higher-button').disabled = val;
+        document.querySelector('.lower-button').disabled = val;
+    }
+    
+    function HideRightAnswerValueText() {
+        const _currentRightIndex = currentLeftIndex < answerValues.length - 1 ? currentLeftIndex + 1 : 0;
+        let _rightAnswerValueElements = [...document.querySelectorAll(`.answer-value-${_currentRightIndex}`)];
+        _rightAnswerValueElements.forEach(element => {
+            element.textContent = "?";
+        })
+    }
+    
     function ToggleDisplayCheckBox() {
         var greenCheckElement = document.getElementById('green-check');
         if (greenCheckElement) {
             greenCheckElement.style.visibility = greenCheckElement.style.visibility === 'visible' ? 'hidden' : 'visible';
         }
-    }
-
-    function DisableAnswerButtons(val) {
-        document.querySelector('.higher-button').disabled = val;
-        document.querySelector('.lower-button').disabled = val;
     }
 
     return (
