@@ -8,7 +8,7 @@ function AnswerSlide(props) {
             className="container d-flex justify-content-center align-items-center"
             style={
                 {
-                    backgroundColor: _answer.backgroundColor,
+                    backgroundColor: _answer.backgroundColor ? _answer.backgroundColor : "grey",
                     backgroundImage: `url(${_answer.backgroundImageURL ? _answer.backgroundImageURL : ''})`,
                     backgroundRepeat: "no-repeat",
                     backgroundSize: "cover",
@@ -16,7 +16,7 @@ function AnswerSlide(props) {
                 }
             }
         >
-            <div className="row row-cols-1 gy-1 rounded text-light" style={{ '--bs-bg-opacity': 0.8, minWidth: '40%' }}>
+            <div className="row row-cols-1 gy-1 rounded text-light" style={{ '--bs-bg-opacity': 0.8}}>
                 <div className="col">
                     <h2 className="text-outline" >{_answer.answerTerm}</h2>
                 </div>
